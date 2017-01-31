@@ -256,6 +256,9 @@ class CompiledObject(Context):
     def get_imports(self):
         return []  # Builtins don't have imports
 
+    def dict_values(self):
+        return set([create(self.evaluator, val) for val in self.obj.values()])
+
 
 class CompiledName(AbstractNameDefinition):
     def __init__(self, evaluator, parent_context, name):
