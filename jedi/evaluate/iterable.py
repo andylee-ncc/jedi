@@ -515,7 +515,15 @@ class FakeSequence(_FakeArray):
         return self._context_list
 
     def py__getitem__(self, index):
-        return set(self._lazy_context_list[index].infer())
+        got = self._lazy_context_list[index]
+        if isinstance(index, slice):
+            import itertools
+            flattened = set()
+            for item in got:
+                set.update(item.infer())
+            return flattened
+        else:
+            return set(got.infer())
 
     def py__iter__(self):
         return self._lazy_context_list
