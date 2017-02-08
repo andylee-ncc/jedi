@@ -8,6 +8,8 @@ from jedi.parser.tree import search_ancestor
 from jedi.evaluate import flow_analysis
 from jedi.common import to_list, unite
 
+import logging
+
 
 class AbstractNameDefinition(object):
     start_pos = None
@@ -106,7 +108,11 @@ class ParamName(AbstractTreeName):
     def get_param(self):
         params = self.parent_context.get_params()
         param_node = search_ancestor(self.tree_name, 'param')
-        return params[param_node.position_nr]
+        if param_node.position_nr >= len(params):
+            (logging.getLogger(__name__ + '.ParamName')
+             .error('Index error. Node: {}  Index: {}  Length of params: {}'
+                    .format(param_node, param_node.position_nr, len(params))))
+        return params[min(param_node.position_nr, len(params) - 1)]
 
 
 class AnonymousInstanceParamName(ParamName):
