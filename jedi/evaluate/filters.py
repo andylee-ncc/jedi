@@ -106,7 +106,9 @@ class ParamName(AbstractTreeName):
     def get_param(self):
         params = self.parent_context.get_params()
         param_node = search_ancestor(self.tree_name, 'param')
-        return params[param_node.position_nr]
+        if param_node.position_nr >= len(params):
+            print(params, param_node, param_node.position_nr)
+        return params[min(param_node.position_nr, len(params) - 1)]
 
 
 class AnonymousInstanceParamName(ParamName):
