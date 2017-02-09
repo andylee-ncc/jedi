@@ -3,6 +3,9 @@ from jedi.parser import tree
 from jedi.evaluate import imports
 from jedi.evaluate.filters import TreeNameDefinition
 from jedi.evaluate.representation import ModuleContext
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def compare_contexts(c1, c2):
@@ -42,7 +45,11 @@ def usages(evaluator, definition_names, mods):
         if isinstance(m, ModuleContext):
             for name_node in m.tree_node.used_names.get(search_name, []):
                 context = evaluator.create_context(m, name_node)
-                result = evaluator.goto(context, name_node)
+                try:
+                    result = evaluator.goto(context, name_node)
+                except NotImplementedError as ni_err:
+                    logger.error(ni_err)
+                    continue
                 if any(compare_contexts(c1, c2)
                        for c1 in compare_array(result)
                        for c2 in compare_definitions):
