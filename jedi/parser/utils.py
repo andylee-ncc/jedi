@@ -122,12 +122,15 @@ class ParserPickling(object):
             # the pickle file is outdated
             return None
 
-        with open(self._get_hashed_path(path), 'rb') as f:
-            try:
-                gc.disable()
-                parser_cache_item = pickle.load(f)
-            finally:
-                gc.enable()
+        try:
+            with open(self._get_hashed_path(path), 'rb') as f:
+                try:
+                    gc.disable()
+                    parser_cache_item = pickle.load(f)
+                finally:
+                    gc.enable()
+        except FileNotFoundError:
+            return None
 
         debug.dbg('pickle loaded: %s', path)
         parser_cache[path] = parser_cache_item
