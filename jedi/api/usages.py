@@ -47,7 +47,7 @@ def usages(evaluator, definition_names, mods):
                 context = evaluator.create_context(m, name_node)
                 try:
                     result = evaluator.goto(context, name_node)
-                except NotImplementedError as ni_err:
+                except (NotImplementedError, RecursionError) as err:
                     logger.error(ni_err)
                     continue
                 if any(compare_contexts(c1, c2)
