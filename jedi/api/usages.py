@@ -48,7 +48,7 @@ def usages(evaluator, definition_names, mods):
                 try:
                     result = evaluator.goto(context, name_node)
                 except (NotImplementedError, RecursionError) as err:
-                    logger.error(ni_err)
+                    logger.error(err)
                     continue
                 if any(compare_contexts(c1, c2)
                        for c1 in compare_array(result)
